@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "prerelation-js: the prerelation coefficient in JavaScript"
+abstract: >-
+  A dependency-free JavaScript implementation of the prerelation
+  coefficient and its pairwise scan, held in parity with the Python
+  reference implementation through committed golden vectors.
+type: software
+authors:
+  - family-names: Choi
+    given-names: Jaehwa
+    email: jaechoi@gwu.edu
+    affiliation: George Washington University
+version: 0.1.0
+date-released: "2026-08-27"
+license: MIT
+repository-code: "https://github.com/JaehwaFChoi/prerelation-js"
+keywords:
+  - psychometrics
+  - prerequisite relations
+  - dominance preorder
+  - permutation test
+references:
+  - type: software
+    title: "prerelation: the prerelation coefficient"
+    authors:
+      - family-names: Choi
+        given-names: Jaehwa
+    doi: 10.5281/zenodo.22132819
+    repository-code: "https://github.com/JaehwaFChoi/prerelation"

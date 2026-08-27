@@ -1,0 +1,41 @@
+{
+  "name": "prerelation-js",
+  "version": "0.1.0",
+  "description": "JavaScript implementation of the prerelation coefficient, in parity with the Python reference implementation",
+  "license": "MIT",
+  "author": "Jaehwa Choi <jaechoi@gwu.edu>",
+  "type": "module",
+  "main": "src/index.mjs",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src/",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/golden.test.mjs test/fs_scan.test.mjs test/scan_unit.test.mjs",
+    "demo": "node tools/precompute_demo.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JaehwaFChoi/prerelation-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JaehwaFChoi/prerelation-js/issues"
+  },
+  "homepage": "https://github.com/JaehwaFChoi/prerelation-js#readme",
+  "keywords": [
+    "psychometrics",
+    "prerequisite",
+    "dominance-preorder",
+    "anchored-scale",
+    "permutation-test"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
