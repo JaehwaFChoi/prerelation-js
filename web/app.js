@@ -52,7 +52,12 @@
   }
 
   function fmt(value, digits) {
-    return Number(value).toFixed(digits == null ? 3 : digits);
+    var text = Number(value).toFixed(digits == null ? 3 : digits);
+    // toFixed keeps the sign of a tiny negative number that rounds to
+    // zero, so Delta for a near-symmetric pair would print as "-0.000".
+    // The value is right; the minus sign is noise.
+    if (Number(text) === 0) text = text.replace("-", "");
+    return text;
   }
 
   function pearsonR(x, y) {
