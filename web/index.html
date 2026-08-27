@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>prerelation-js — dominance preorder viewer</title>
+    <title>The prerelation coefficient — calculator and guide</title>
     <style>
       :root {
         --paper: #eff1ec;
@@ -15,15 +15,14 @@
         --teal-soft: #4c8a83;
         --gold: #96731c;
         --violet: #5c4a86;
+        --red: #8a3324;
         --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
           "Times New Roman", serif;
         --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       body {
         margin: 0;
@@ -34,16 +33,12 @@
         line-height: 1.55;
       }
 
-      .wrap {
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 40px 24px 72px;
-      }
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 72px; }
 
       header.masthead {
         border-bottom: 1px solid var(--rule);
         padding-bottom: 22px;
-        margin-bottom: 28px;
+        margin-bottom: 34px;
       }
 
       .eyebrow {
@@ -64,75 +59,31 @@
         letter-spacing: -0.01em;
       }
 
-      h1 em {
-        font-style: italic;
-        color: var(--teal);
+      h1 em { font-style: italic; color: var(--teal); }
+
+      .lede { max-width: 66ch; margin: 0; color: var(--ink-soft); }
+
+      section.chapter { margin: 0 0 46px; }
+
+      .chapter > h2 {
+        font-family: var(--serif);
+        font-weight: 400;
+        font-size: 26px;
+        margin: 0 0 6px;
       }
 
-      .lede {
-        max-width: 62ch;
-        margin: 0;
-        color: var(--ink-soft);
-      }
-
-      .formula {
+      .chapter-no {
         font-family: var(--mono);
-        font-size: 13px;
-        color: var(--teal);
-        margin-top: 14px;
-      }
-
-      .switch {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin: 26px 0 8px;
-      }
-
-      .switch button {
-        font-family: var(--mono);
-        font-size: 12px;
-        letter-spacing: 0.06em;
+        font-size: 11px;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
-        padding: 9px 15px;
-        border: 1px solid var(--rule);
-        background: var(--plate);
-        color: var(--ink-soft);
-        border-radius: 2px;
-        cursor: pointer;
+        color: var(--gold);
+        display: block;
+        margin-bottom: 6px;
       }
 
-      .switch button[aria-pressed="true"] {
-        background: var(--teal);
-        border-color: var(--teal);
-        color: var(--plate);
-      }
-
-      .switch button:focus-visible,
-      .cell:focus-visible,
-      .classnode:focus-visible {
-        outline: 2px solid var(--gold);
-        outline-offset: 2px;
-      }
-
-      .meta {
-        font-family: var(--mono);
-        font-size: 12px;
-        color: var(--ink-soft);
-        margin: 0 0 30px;
-      }
-
-      .panels {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 28px;
-      }
-
-      @media (max-width: 860px) {
-        .panels {
-          grid-template-columns: minmax(0, 1fr);
-        }
-      }
+      .prose { max-width: 74ch; }
+      .prose p { margin: 0 0 14px; }
 
       section.panel {
         background: var(--plate);
@@ -141,292 +92,597 @@
         padding: 20px 20px 22px;
       }
 
-      h2 {
-        font-family: var(--serif);
-        font-weight: 400;
-        font-size: 21px;
-        margin: 0 0 4px;
+      h3 { font-family: var(--serif); font-weight: 400; font-size: 20px; margin: 0 0 4px; }
+
+      .panel-note { font-size: 13px; color: var(--ink-soft); margin: 0 0 16px; max-width: 60ch; }
+
+      .readblock {
+        background: var(--plate);
+        border: 1px solid var(--rule);
+        border-left: 3px solid var(--teal);
+        border-radius: 3px;
+        padding: 16px 18px;
+        margin: 0 0 14px;
+        max-width: 78ch;
+      }
+      .readblock h3 { margin-bottom: 8px; }
+      .readblock p { margin: 0 0 10px; }
+      .readblock p:last-child { margin-bottom: 0; }
+      .honesty { border-left-color: var(--gold); }
+      .honesty strong { color: var(--gold); }
+
+      .fourpanel {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 16px;
+        margin: 16px 0 10px;
+      }
+      .fourpanel .cellpanel {
+        background: var(--plate);
+        border: 1px solid var(--rule);
+        border-radius: 3px;
+        padding: 12px 12px 14px;
+      }
+      .fourpanel .cellpanel.centerpiece { border-color: var(--violet); border-width: 2px; }
+      .fourpanel h4 { margin: 0 0 6px; font-family: var(--serif); font-weight: 400; font-size: 16px; }
+      .statline { font-family: var(--mono); font-size: 12px; margin: 2px 0; display: flex; justify-content: space-between; gap: 8px; }
+      .statline .v { color: var(--teal); }
+
+      .meta { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); margin: 6px 0 0; }
+
+      .samples { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px; }
+      .samples .panel h3 code { font-family: var(--mono); font-size: 14px; }
+      .samples a.dl {
+        display: inline-block; margin-top: 8px;
+        font-family: var(--mono); font-size: 12px;
+        color: var(--plate); background: var(--teal);
+        padding: 7px 12px; border-radius: 2px; text-decoration: none;
       }
 
-      .panel-note {
-        font-size: 13px;
-        color: var(--ink-soft);
-        margin: 0 0 16px;
-        max-width: 54ch;
-      }
+      /* ---- calculator ---- */
+      .calc-grid { display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr); gap: 24px; align-items: start; }
+      @media (max-width: 900px) { .calc-grid { grid-template-columns: minmax(0, 1fr); } }
 
-      table.matrix {
-        border-collapse: collapse;
-        font-family: var(--mono);
-        font-size: 11px;
-      }
-
-      table.matrix th {
-        font-weight: 400;
-        color: var(--ink-soft);
-        padding: 3px 6px;
-        text-align: right;
-        white-space: nowrap;
-      }
-
-      table.matrix th.col {
+      .drop {
+        display: block;
+        border: 2px dashed var(--rule);
+        border-radius: 3px;
+        padding: 22px 16px;
         text-align: center;
-        vertical-align: bottom;
+        color: var(--ink-soft);
+        font-size: 13px;
+        background: var(--paper);
+        cursor: pointer;
       }
+      .drop.dragover { border-color: var(--teal); color: var(--teal); }
+      .drop input { display: none; }
+
+      .field { margin: 14px 0 0; font-size: 13px; }
+      .field label { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
+      .field input[type="number"] {
+        font-family: var(--mono); font-size: 13px; padding: 6px 8px;
+        border: 1px solid var(--rule); border-radius: 2px; background: var(--plate); width: 120px;
+      }
+      .cols { display: flex; flex-wrap: wrap; gap: 6px; }
+      .cols label.colpick {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-family: var(--mono); font-size: 12px; text-transform: none; letter-spacing: 0;
+        border: 1px solid var(--rule); border-radius: 2px; padding: 4px 8px; background: var(--plate);
+        cursor: pointer; color: var(--ink);
+      }
+
+      .frozen { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); margin-top: 14px; line-height: 1.7; }
+
+      button.run {
+        margin-top: 16px;
+        font-family: var(--mono); font-size: 13px; letter-spacing: 0.06em;
+        padding: 10px 18px; border: 1px solid var(--teal); border-radius: 2px;
+        background: var(--teal); color: var(--plate); cursor: pointer;
+      }
+      button.run:disabled { opacity: 0.5; cursor: default; }
+      button.ghost {
+        font-family: var(--mono); font-size: 12px;
+        padding: 7px 12px; border: 1px solid var(--rule); border-radius: 2px;
+        background: var(--plate); color: var(--ink-soft); cursor: pointer;
+      }
+
+      .banner { border-radius: 3px; padding: 12px 14px; font-size: 13px; margin: 14px 0 0; }
+      .banner.error { background: #f6e8e4; border: 1px solid var(--red); color: var(--red); }
+      .banner.info { background: #e9efe9; border: 1px solid var(--teal-soft); color: var(--teal); }
+      .banner.warn { background: #f5efdd; border: 1px solid var(--gold); color: var(--gold); }
+
+      .progress { margin-top: 14px; display: none; }
+      .progress .track { height: 8px; background: var(--paper); border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
+      .progress .fill { height: 100%; width: 0%; background: var(--teal-soft); transition: width 120ms linear; }
+      .progress .cap { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); margin-top: 5px; display: flex; justify-content: space-between; }
+
+      /* ---- pair card ---- */
+      .paircard .delta-big { font-family: var(--mono); font-size: 30px; color: var(--teal); margin: 4px 0 0; }
+      .paircard .delta-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+      .pair-grid { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 24px; align-items: start; margin-top: 12px; }
+      @media (max-width: 760px) { .pair-grid { grid-template-columns: minmax(0, 1fr); } }
+
+      /* ---- scan view (matrix / hasse / inspector) ---- */
+      .panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+      @media (max-width: 860px) { .panels { grid-template-columns: minmax(0, 1fr); } }
+
+      table.matrix { border-collapse: collapse; font-family: var(--mono); font-size: 11px; }
+      table.matrix th { font-weight: 400; color: var(--ink-soft); padding: 3px 6px; text-align: right; white-space: nowrap; }
+      table.matrix th.col { text-align: center; vertical-align: bottom; }
 
       .cell {
-        width: 54px;
-        height: 40px;
-        border: 1px solid var(--rule);
-        padding: 0;
-        cursor: pointer;
-        position: relative;
-        font-family: var(--mono);
-        font-size: 11px;
-        color: var(--ink);
-        background: var(--plate);
+        width: 54px; height: 40px; border: 1px solid var(--rule); padding: 0;
+        cursor: pointer; position: relative;
+        font-family: var(--mono); font-size: 11px; color: var(--ink); background: var(--plate);
       }
-
       .cell.diag {
-        background: repeating-linear-gradient(
-          45deg,
-          var(--paper),
-          var(--paper) 3px,
-          var(--plate) 3px,
-          var(--plate) 6px
-        );
+        background: repeating-linear-gradient(45deg, var(--paper), var(--paper) 3px, var(--plate) 3px, var(--plate) 6px);
         cursor: default;
       }
-
       .cell.edge::after {
-        content: "";
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--gold);
+        content: ""; position: absolute; top: 4px; right: 4px;
+        width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
       }
+      .cell.selected { box-shadow: inset 0 0 0 2px var(--gold); }
 
-      .cell.selected {
-        box-shadow: inset 0 0 0 2px var(--gold);
-      }
+      .legend { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-family: var(--mono); font-size: 11px; color: var(--ink-soft); }
+      .ramp { height: 9px; width: 130px; background: linear-gradient(90deg, #f7f8f5, #16564f); border: 1px solid var(--rule); }
+      .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; }
 
-      .legend {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 14px;
-        font-family: var(--mono);
-        font-size: 11px;
-        color: var(--ink-soft);
-      }
+      svg { display: block; max-width: 100%; height: auto; }
+      .classnode { cursor: default; }
 
-      .ramp {
-        height: 9px;
-        width: 130px;
-        background: linear-gradient(90deg, #f7f8f5, #16564f);
-        border: 1px solid var(--rule);
-      }
+      .inspector { margin-top: 28px; }
+      .inspector-grid { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 28px; align-items: start; }
+      @media (max-width: 720px) { .inspector-grid { grid-template-columns: minmax(0, 1fr); } }
 
-      .dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--gold);
-        display: inline-block;
-      }
-
-      svg {
-        display: block;
-        max-width: 100%;
-        height: auto;
-      }
-
-      .classnode {
-        cursor: default;
-      }
-
-      .inspector {
-        margin-top: 28px;
-      }
-
-      .inspector-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
-        gap: 28px;
-        align-items: start;
-      }
-
-      @media (max-width: 720px) {
-        .inspector-grid {
-          grid-template-columns: minmax(0, 1fr);
-        }
-      }
-
-      dl.components {
-        margin: 0;
-        font-family: var(--mono);
-        font-size: 12px;
-      }
-
+      dl.components { margin: 0; font-family: var(--mono); font-size: 12px; }
       dl.components div {
-        display: grid;
-        grid-template-columns: 92px 1fr 74px;
-        align-items: center;
-        gap: 10px;
-        padding: 5px 0;
-        border-bottom: 1px dotted var(--rule);
+        display: grid; grid-template-columns: 100px 1fr 74px; align-items: center; gap: 10px;
+        padding: 5px 0; border-bottom: 1px dotted var(--rule);
       }
+      dl.components dt { color: var(--ink-soft); }
+      dl.components dd { margin: 0; text-align: right; }
 
-      dl.components dt {
-        color: var(--ink-soft);
-      }
+      .bar { height: 7px; background: var(--paper); border: 1px solid var(--rule); position: relative; }
+      .bar span { position: absolute; inset: 0 auto 0 0; background: var(--teal-soft); }
+      .bar.product span { background: var(--teal); }
 
-      dl.components dd {
-        margin: 0;
-        text-align: right;
-      }
+      .verdict { font-family: var(--mono); font-size: 12px; margin: 14px 0 0; color: var(--ink-soft); }
+      .verdict strong { color: var(--ink); font-weight: 600; }
 
-      .bar {
-        height: 7px;
-        background: var(--paper);
-        border: 1px solid var(--rule);
-        position: relative;
-      }
+      .caption { font-size: 13px; color: var(--ink-soft); margin: 16px 0 0; max-width: 62ch; }
 
-      .bar span {
-        position: absolute;
-        inset: 0 auto 0 0;
-        background: var(--teal-soft);
-      }
+      .results-tools { display: flex; gap: 10px; align-items: center; margin-top: 18px; flex-wrap: wrap; }
+      table.results { border-collapse: collapse; font-family: var(--mono); font-size: 11px; margin-top: 12px; }
+      table.results th, table.results td { border: 1px solid var(--rule); padding: 4px 7px; text-align: right; }
+      table.results th { color: var(--ink-soft); font-weight: 400; }
+      table.results td.name { text-align: left; }
+      .results-scroll { overflow-x: auto; }
 
-      .bar.product span {
-        background: var(--teal);
+      .switch { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 8px; }
+      .switch button {
+        font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+        padding: 9px 15px; border: 1px solid var(--rule); background: var(--plate);
+        color: var(--ink-soft); border-radius: 2px; cursor: pointer;
       }
+      .switch button[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: var(--plate); }
+      .switch button:focus-visible, .cell:focus-visible, .classnode:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
-      .verdict {
-        font-family: var(--mono);
-        font-size: 12px;
-        margin: 14px 0 0;
-        color: var(--ink-soft);
+      .explainer {
+        border-left: 3px solid var(--violet);
+        background: var(--plate);
+        border-top: 1px solid var(--rule); border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+        border-radius: 3px;
+        padding: 14px 16px; margin: 0 0 18px; max-width: 78ch; font-size: 14px;
       }
+      .explainer h3 { font-size: 17px; }
+      .explainer p { margin: 8px 0 0; }
 
-      .verdict strong {
-        color: var(--ink);
-        font-weight: 600;
-      }
+      .citetable { border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+      .citetable th, .citetable td { border: 1px solid var(--rule); padding: 7px 10px; text-align: left; }
+      .citetable th { font-weight: 600; background: var(--plate); }
+      .citetable code { font-family: var(--mono); font-size: 12px; }
 
-      footer {
-        margin-top: 40px;
-        padding-top: 20px;
-        border-top: 1px solid var(--rule);
-        font-size: 13px;
-        color: var(--ink-soft);
-        max-width: 74ch;
-      }
-
-      footer code {
-        font-family: var(--mono);
-        font-size: 12px;
-      }
-
-      .caption {
-        font-size: 13px;
-        color: var(--ink-soft);
-        margin: 16px 0 0;
-        max-width: 58ch;
-      }
+      footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--ink-soft); max-width: 78ch; }
+      footer code { font-family: var(--mono); font-size: 12px; }
+      a { color: var(--teal); }
     </style>
   </head>
   <body>
     <div class="wrap">
       <header class="masthead">
-        <p class="eyebrow">prerelation-js &mdash; demo</p>
-        <h1>Which attributes act as a <em>ceiling</em> on which others?</h1>
+        <p class="eyebrow">prerelation-js &mdash; the prerelation coefficient, in your browser</p>
+        <h1>What should be learned <em>first</em>?</h1>
         <p class="lede">
-          The prerelation coefficient scores an ordered pair of traits reported
-          on a common anchored scale: the corner above the diagonal has to be
-          empty, and what sits below the ceiling has to stay free. Every number
-          on this page was computed in the browser build of this package.
+          A coefficient for prerequisite relations between skills reported on a
+          common anchored scale &mdash; with a calculator that runs entirely in
+          this page, on your own data.
         </p>
-        <p class="formula">Pi(X &rarr; Y) = A1 &middot; A2, &nbsp; A2 = q &middot; ell, &nbsp; Delta = Pi(X &rarr; Y) &minus; Pi(Y &rarr; X)</p>
       </header>
 
-      <div class="switch" id="dataset-switch" role="group" aria-label="Dataset"></div>
-      <p class="meta" id="dataset-meta"></p>
-
-      <div class="panels">
-        <section class="panel">
-          <h2>Pi matrix</h2>
-          <p class="panel-note">
-            Rows are the candidate prerequisite, columns the dependent trait.
-            Select any cell to inspect that pair. A dot marks a pair that
-            survived the false discovery rate control.
+      <!-- ================================================== 1 ============ -->
+      <section class="chapter" id="sec-question">
+        <h2><span class="chapter-no">1</span>Your question</h2>
+        <div class="prose">
+          <p>
+            Anyone who designs instruction, curricula, learning apps, or
+            diagnostic assessments makes ordering decisions all the time: what
+            to teach first, which skill unlocks the next, where a learning
+            pathway should branch. These decisions usually rest on expert
+            judgment and curricular tradition. Data could inform them &mdash;
+            but the standard statistical toolbox was built to measure
+            <em>association</em>, not <em>order</em>.
           </p>
-          <div id="matrix"></div>
-          <div class="legend">
-            <span>Pi 0</span>
-            <span class="ramp" aria-hidden="true"></span>
-            <span>1</span>
-            <span style="margin-left:12px"><span class="dot"></span> retained</span>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>Dominance preorder</h2>
-          <p class="panel-note">
-            Attributes that dominate each other are condensed into one node;
-            the diagram is the Hasse diagram of the quotient order over those
-            classes.
+          <p>
+            The familiar correlation answers a symmetric question: do X and Y
+            move together? Prerequisite-ness is asymmetric: does progress in Y
+            <em>require</em> X first? A high correlation cannot tell
+            X&rarr;Y from Y&rarr;X, nor from &ldquo;both reflect one shared
+            ability&rdquo; &mdash; and two nearly identical skills correlate
+            perfectly while neither is a prerequisite of the other. When scores
+            live on a common anchored scale (0&nbsp;=&nbsp;ignorance,
+            1&nbsp;=&nbsp;mastery), a true prerequisite relation leaves a
+            specific one-sided footprint in the data that a symmetric
+            coefficient cannot express.
           </p>
-          <div id="hasse"></div>
-          <p class="caption" id="hasse-caption"></p>
-        </section>
-      </div>
-
-      <section class="panel inspector">
-        <h2 id="inspector-title">Pair inspector</h2>
-        <p class="panel-note" id="inspector-note"></p>
-        <div class="inspector-grid">
-          <div>
-            <dl class="components" id="components"></dl>
-            <p class="verdict" id="verdict"></p>
-          </div>
-          <div>
-            <div id="scatter"></div>
-            <p class="caption">
-              Shaded above the diagonal: the corner {Y &gt; X}, whose emptiness
-              relative to the independence baseline gives A1. Hatched along the
-              diagonal: the ceiling band, points with Y / X at or above
-              1 &minus; delta. The rule at the right marks the top-x stratum
-              where legitimacy is checked. Trait values are drawn rounded to six
-              decimals; the statistics were computed at full precision.
-            </p>
-          </div>
+          <p>
+            The prerelation coefficient &Pi; scores exactly that footprint for
+            an ordered pair. Reach for it when your scores are anchored on
+            [0,&nbsp;1] and your question is about ordering &mdash; sequencing a
+            curriculum, checking a hypothesized skill hierarchy against data,
+            or screening skill pairs before building an adaptive pathway. It
+            complements correlation rather than replacing it: a different
+            question, not a better answer.
+          </p>
         </div>
+      </section>
+
+      <!-- ================================================== 2 ============ -->
+      <section class="chapter" id="sec-read">
+        <h2><span class="chapter-no">2</span>What &Pi; and &Delta; tell you</h2>
+        <div class="readblock">
+          <h3>&Delta; &mdash; the prerelation direction coefficient</h3>
+          <p>
+            &Delta; = &Pi;(X&rarr;Y) &minus; &Pi;(Y&rarr;X), on
+            [&minus;1,&nbsp;+1] and antisymmetric.
+            <strong>The sign is the direction</strong> &mdash; positive means X
+            is the prerequisite side &mdash; and
+            <strong>the magnitude is the strength of the asymmetry</strong>. It
+            reads like a signed coefficient, the natural counterpart to how
+            practitioners read r.
+          </p>
+        </div>
+        <div class="readblock honesty">
+          <p>
+            <strong>Read &Delta; together with the &Pi; pair.</strong>
+            &Delta;&nbsp;=&nbsp;0 by itself does not distinguish &ldquo;no
+            relation&rdquo; from &ldquo;equivalent skills&rdquo; &mdash; both
+            put the two directions on an equal footing.
+          </p>
+        </div>
+        <div class="readblock">
+          <h3>&Pi; &mdash; per-direction strength</h3>
+          <p>
+            &Pi; lives on [0,&nbsp;1]: <strong>0 means no prerequisite
+            relation, 1 means a perfect prerequisite relation</strong>. It is a
+            continuous quantity, read like a correlation magnitude &mdash;
+            there are no thresholds and no cutoffs anywhere on this page.
+          </p>
+        </div>
+        <div class="readblock">
+          <h3>The reading ladder</h3>
+          <p>
+            First the permutation p &mdash; is there a relation at all? Then
+            &Delta; &mdash; which direction, and how asymmetric? Then the
+            &Pi; pair &mdash; the per-direction strength.
+          </p>
+          <p>
+            Notation: values computed from data are shown as plain &Pi; and
+            &Delta;, estimated from your data. Correlation is shown as
+            <strong>Pearson r</strong>, a sample statistic (its population
+            counterpart is written &rho;).
+          </p>
+        </div>
+      </section>
+
+      <!-- ================================================== 3 ============ -->
+      <section class="chapter" id="sec-sidebyside">
+        <h2><span class="chapter-no">3</span>Side-by-side with correlation</h2>
+        <p class="panel-note">
+          Four simulated skill pairs, one per panel &mdash; generated in this
+          browser by the shipped library and scored live. Each panel shows
+          Pearson r, &Delta;, &Pi;(X&rarr;Y) and &Pi;(Y&rarr;X), estimated from
+          the sample drawn.
+        </p>
+        <div class="fourpanel" id="fourpanel"></div>
+        <p class="meta" id="fourpanel-meta"></p>
+        <p class="caption" id="fourpanel-caption">
+          The equivalence panel is the centerpiece: r is close to 1 while
+          &Delta;&nbsp;=&nbsp;0 and both &Pi;&nbsp;=&nbsp;0. That is a
+          mathematical property of the two definitions. Read one way: r
+          registers the co-movement of two nearly identical skills. Read the
+          other way: &Pi; registers no one-sided prerequisite footprint,
+          because between equivalent skills there is none.
+        </p>
+      </section>
+
+      <!-- ================================================== 4 ============ -->
+      <section class="chapter" id="sec-try">
+        <h2><span class="chapter-no">4</span>Try it now</h2>
+        <section class="panel">
+          <h3>The calculator</h3>
+          <p class="panel-note">
+            Upload a CSV of scores on the anchored [0,&nbsp;1] scale &mdash;
+            one column per skill, one row per person. Your data never leaves
+            this browser: parsing and every statistic run locally on this page.
+          </p>
+          <div class="calc-grid">
+            <div>
+              <label class="drop" id="drop">
+                <input type="file" id="file-input" accept=".csv,.tsv,.txt,text/csv" />
+                <span id="drop-label">Drop a CSV here, or click to choose a file</span>
+              </label>
+              <div class="results-tools" style="margin-top:10px">
+                <button class="ghost" id="load-ecpe" type="button">Load the ECPE demo data</button>
+                <button class="ghost" id="load-fs" type="button">Load the fraction subtraction demo data</button>
+              </div>
+              <div id="file-summary" class="banner info" style="display:none"></div>
+              <div class="field" id="col-picker-wrap" style="display:none">
+                <label>Columns to analyze (pick 2 for a pair card, 3+ for a full scan)</label>
+                <div class="cols" id="col-picker"></div>
+              </div>
+              <div class="field" id="perm-wrap" style="display:none">
+                <label for="nperm">Permutations per ordered pair (M)</label>
+                <input type="number" id="nperm" min="1" step="1" />
+                <div class="meta" id="mfloor-note"></div>
+              </div>
+              <div class="field" id="seed-wrap" style="display:none">
+                <label for="seed">Seed</label>
+                <input type="number" id="seed" step="1" value="20260827" />
+              </div>
+              <div class="frozen" id="frozen-note" style="display:none"></div>
+              <div id="gate-banner"></div>
+              <button class="run" id="run" type="button" style="display:none">Compute</button>
+              <div class="progress" id="progress">
+                <div class="track"><div class="fill" id="progress-fill"></div></div>
+                <div class="cap">
+                  <span id="progress-text"></span>
+                  <button class="ghost" id="cancel" type="button">Cancel</button>
+                </div>
+              </div>
+            </div>
+            <div id="calc-output">
+              <p class="panel-note">
+                Results appear here: a pair card for two columns, or the
+                &Pi; matrix, the Hasse diagram of the quotient order and a pair
+                inspector for three or more &mdash; plus a results table you
+                can export as CSV. Values shown are estimated from your data.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div class="samples">
+          <section class="panel">
+            <h3><code>sample1_prereq_pair.csv</code></h3>
+            <p class="panel-note">
+              500 persons &times; 2 skills (basic_arithmetic, algebra). Expect
+              a strong one-directional result (arithmetic &rarr; algebra) and a
+              near-zero reverse; compare with the Pearson r shown.
+            </p>
+            <a class="dl" href="https://drive.google.com/file/d/1B0JLxBuko6YOerR9qjAeELlurARBZvaH/view" target="_blank" rel="noopener">Download sample 1</a>
+          </section>
+          <section class="panel">
+            <h3><code>sample2_skill_chain.csv</code></h3>
+            <p class="panel-note">
+              600 persons &times; 5 skills: a
+              counting &rarr; addition &rarr; multiplication &rarr; division
+              chain plus an unrelated spelling column. Expect the chain with
+              direct links strongest and indirect links weaker (the Hasse view
+              prunes implied links), and spelling connected to nothing.
+            </p>
+            <a class="dl" href="https://drive.google.com/file/d/1uY0L4ULmEzb6xjf8OqYr1-2OVWQPEjCF/view" target="_blank" rel="noopener">Download sample 2</a>
+          </section>
+        </div>
+      </section>
+
+      <!-- ================================================== 5 ============ -->
+      <section class="chapter" id="sec-demos">
+        <h2><span class="chapter-no">5</span>Real-data demonstrations</h2>
+
+        <div class="switch" id="dataset-switch" role="group" aria-label="Dataset"></div>
+        <p class="meta" id="dataset-meta"></p>
+
+        <div class="explainer" id="explainer-ecpe" style="display:none">
+          <h3>ECPE &mdash; what this shows</h3>
+          <p>
+            The grammar section of an English proficiency examination: 28
+            items, n&nbsp;=&nbsp;2,922 examinees, three attributes
+            (morphosyntactic, cohesive, lexical). The retained edges form a
+            clean three-attribute chain in the recovered dominance order:
+            lexical (skill3) sits at the top, above morphosyntactic (skill1),
+            which sits above cohesive (skill2).
+          </p>
+          <p>
+            How to read it: an arrow means the source attribute acts as a
+            ceiling on the target &mdash; progress on the target stays at or
+            below what the source grants. Walk the ladder pair by pair in the
+            inspector: permutation p first, then &Delta; for the direction,
+            then the &Pi; pair for per-direction strength.
+          </p>
+        </div>
+
+        <div class="explainer" id="explainer-fs" style="display:none">
+          <h3>Fraction subtraction &mdash; what this shows</h3>
+          <p>
+            536 examinees, eight attributes of fraction subtraction. Here the
+            raw edge set contains directed cycles, and five attributes condense
+            into one merged node. Both are shown <strong>as-is</strong>: they
+            are expected behavior of a pairwise index when attributes share
+            underlying ability, not something the display cleans up.
+          </p>
+          <p>
+            This is where the honest boundary of the method lives. What the
+            scan recovers is a <strong>dominance preorder</strong> &mdash;
+            which attributes act as ceilings on which others &mdash; and not a
+            map of direct teaching prerequisites. Skills that lean on the same
+            underlying ability can dominate each other mutually (a cycle, drawn
+            as a merged node), and a skill can sit above another it was never
+            taught before. If the picture disagrees with an expert-specified
+            hierarchy, that is a difference between two concepts, not by itself
+            an error in either.
+          </p>
+        </div>
+
+        <div class="panels">
+          <section class="panel">
+            <h3>&Pi; matrix</h3>
+            <p class="panel-note">
+              Rows are the candidate prerequisite, columns the dependent trait.
+              Select any cell to inspect that pair. A dot marks a pair that
+              survived the false discovery rate control.
+            </p>
+            <div id="demo-matrix"></div>
+            <div class="legend">
+              <span>&Pi; 0</span>
+              <span class="ramp" aria-hidden="true"></span>
+              <span>1</span>
+              <span style="margin-left:12px"><span class="dot"></span> retained</span>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h3>Dominance preorder</h3>
+            <p class="panel-note">
+              Attributes that dominate each other are condensed into one node;
+              the diagram is the Hasse diagram of the quotient order over those
+              classes.
+            </p>
+            <div id="demo-hasse"></div>
+            <p class="caption" id="demo-hasse-caption"></p>
+          </section>
+        </div>
+
+        <section class="panel inspector">
+          <h3 id="demo-inspector-title">Pair inspector</h3>
+          <p class="panel-note" id="demo-inspector-note"></p>
+          <div class="inspector-grid">
+            <div>
+              <dl class="components" id="demo-components"></dl>
+              <p class="verdict" id="demo-verdict"></p>
+            </div>
+            <div>
+              <div id="demo-scatter"></div>
+              <p class="caption">
+                Overlays: the shaded corner {Y &gt; X}, the hatched ceiling
+                band along the diagonal, and the vertical rule marking the
+                top-x stratum. What each overlay measures is explained in
+                section 6. Trait values are drawn rounded to six decimals; the
+                statistics were computed at full precision.
+              </p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ================================================== 6 ============ -->
+      <section class="chapter" id="sec-underhood">
+        <h2><span class="chapter-no">6</span>Under the hood &amp; origin</h2>
+
+        <div class="panels">
+          <section class="panel">
+            <h3>The ceiling mechanism</h3>
+            <p class="panel-note">
+              &Pi;(X&rarr;Y) = A1 &middot; A2 &mdash; corner emptiness times
+              censoring-aware adherence.
+            </p>
+            <div class="prose" style="font-size:14px">
+              <p>
+                <strong>A1 &mdash; the empty corner.</strong> If X is a
+                prerequisite for Y, people should not outrun their
+                prerequisite: the corner {Y &gt; X} above the diagonal should
+                be empty. A1 measures how empty it is, relative to how full
+                independence would leave it.
+              </p>
+              <p>
+                <strong>A2 = q &middot; &#8467; &mdash; free below the
+                ceiling, thinning at the top.</strong> Points piled onto the
+                ceiling Y &asymp; X are read as right-censoring &mdash; the
+                prerequisite is binding, which is evidence for the relation,
+                not against it. Below the ceiling, Y should vary as a free
+                component (q); and the censoring should thin out among the
+                highest-X people, whose ceiling is roomiest (&#8467;, checked
+                in the top-x stratum). Equivalent skills fail exactly here:
+                everything sits on the ceiling everywhere, so q = &#8467; = 0
+                and &Pi; = 0 even though r &asymp; 1.
+              </p>
+              <p>
+                The product is what lets one number separate the cases:
+                independence is annihilated by A1 alone, equivalence by A2
+                alone, and only a genuine one-sided ceiling structure keeps
+                both factors alive.
+              </p>
+            </div>
+          </section>
+          <section class="panel">
+            <h3>Annotated sketch</h3>
+            <p class="panel-note">
+              A simulated prerequisite pair with the three overlays the
+              calculator draws.
+            </p>
+            <div id="mechanism-sketch"></div>
+          </section>
+        </div>
+
+        <div class="readblock" style="margin-top:24px">
+          <h3>Origin</h3>
+          <p>
+            The anchored scale &mdash; 0 as substantive ignorance, 1 as
+            substantive mastery &mdash; comes from the Cognitive Trait Model
+            (Choi, 2022, <em>Mathematics</em>, 10(15):2651), developed further
+            in the ALF measurement paper
+            (<a href="https://arxiv.org/abs/2608.22763" target="_blank" rel="noopener">arXiv:2608.22763</a>).
+            Anchoring is an interpretability requirement of &Pi; &mdash; the
+            ratio Y/X and the corner only carry a prerequisite reading when
+            both endpoints are substantive anchors &mdash; not a claim about
+            the measurement precision of any scoring model. The prerelation
+            coefficient itself is the subject of a paper in preparation.
+          </p>
+        </div>
+
+        <table class="citetable">
+          <tr><th>Software</th><th>Repository</th><th>Concept DOI</th></tr>
+          <tr>
+            <td><code>prerelation</code> (Python, reference implementation)</td>
+            <td><a href="https://github.com/JaehwaFChoi/prerelation" target="_blank" rel="noopener">JaehwaFChoi/prerelation</a></td>
+            <td><a href="https://doi.org/10.5281/zenodo.22132819" target="_blank" rel="noopener">10.5281/zenodo.22132819</a></td>
+          </tr>
+          <tr>
+            <td><code>prerelation-js</code> (this page's library)</td>
+            <td><a href="https://github.com/JaehwaFChoi/prerelation-js" target="_blank" rel="noopener">JaehwaFChoi/prerelation-js</a></td>
+            <td><a href="https://doi.org/10.5281/zenodo.22133624" target="_blank" rel="noopener">10.5281/zenodo.22133624</a></td>
+          </tr>
+        </table>
       </section>
 
       <footer>
         <p>
-          The scan recovers a <strong>dominance preorder</strong> over the
-          attributes &mdash; which attributes act as ceilings on which others
-          &mdash; not a direct-prerequisite DAG. Indirect dominance produces
-          edges of its own, and siblings under a common ceiling can be linked to
-          each other even though neither is a prerequisite for the other. Cycles
-          and merged nodes are expected behaviour of a pairwise index. A
-          disagreement between the recovered order and an expert-specified
-          prerequisite graph is a difference between two concepts, not by itself
-          an error in either.
+          Every number on this page is computed in this browser by the shipped
+          library, or reproduced from its recorded, seeded runs. The scan
+          output is read as a dominance preorder over the attributes; cycles
+          and merged nodes are expected behavior of a pairwise index.
         </p>
         <p>
-          Regenerate this page's data with
-          <code>node tools/precompute_demo.mjs</code>.
+          Library and tests: <code>github.com/JaehwaFChoi/prerelation-js</code>.
+          Regenerate the demo payload with <code>node tools/precompute_demo.mjs</code>;
+          regenerate the browser bundle with <code>npm run build:web</code>.
         </p>
       </footer>
     </div>
 
+    <script src="prerelation.browser.js"></script>
+    <script src="calc_core.js"></script>
     <script src="demo_data.js"></script>
     <script src="app.js"></script>
   </body>

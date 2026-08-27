@@ -1,7 +1,7 @@
 {
   "name": "prerelation-js",
-  "version": "0.1.0",
-  "description": "JavaScript implementation of the prerelation coefficient, in parity with the Python reference implementation",
+  "version": "0.2.0",
+  "description": "JavaScript implementation of the prerelation coefficient, with a browser calculator, in parity with the Python reference implementation",
   "license": "MIT",
   "author": "Jaehwa Choi <jaechoi@gwu.edu>",
   "type": "module",
@@ -18,8 +18,9 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test test/golden.test.mjs test/fs_scan.test.mjs test/scan_unit.test.mjs",
-    "demo": "node tools/precompute_demo.mjs"
+    "test": "node --test test/golden.test.mjs test/fs_scan.test.mjs test/scan_unit.test.mjs test/web_calc.test.mjs",
+    "demo": "node tools/precompute_demo.mjs",
+    "build:web": "node tools/build_web_lib.mjs"
   },
   "repository": {
     "type": "git",

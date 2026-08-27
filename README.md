@@ -2,6 +2,9 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22133624.svg)](https://doi.org/10.5281/zenodo.22133624)
 
+**Live demo and calculator:**
+<https://jaehwafchoi.github.io/prerelation-js/web/>
+
 A JavaScript implementation of the **prerelation coefficient** — a
 coefficient for prerequisite relations between traits reported on a common
 anchored scale — held in parity with the Python reference implementation
@@ -20,6 +23,39 @@ Delta = Pi(X -> Y) - Pi(Y -> X)
 The product structure is what lets a single number separate the four
 extremes. Independence is annihilated by `A1` alone; exact equivalence is
 annihilated by `A2` alone.
+
+## How to read the two scales
+
+**Delta — the prerelation direction coefficient.**
+`Delta = Pi(X -> Y) - Pi(Y -> X)` lies in `[-1, +1]` and is antisymmetric.
+Its **sign is the direction** — positive means X is the prerequisite side —
+and its **magnitude is the strength of the asymmetry**. It reads like a
+signed coefficient, the natural counterpart to how practitioners read r.
+
+*Read Delta together with the Pi pair:* `Delta = 0` by itself does not
+distinguish "no relation" from "equivalent skills" — both put the two
+directions on an equal footing.
+
+**Pi — per-direction strength.** `Pi` lies in `[0, 1]`: **0 means no
+prerequisite relation, 1 means a perfect prerequisite relation**. It is a
+continuous quantity, read like a correlation magnitude; the package
+defines no thresholds and no cutoffs.
+
+**The reading ladder.** Permutation p (is there a relation at all) ->
+Delta (which direction, how asymmetric) -> the Pi pair (per-direction
+strength).
+
+## Relation to the correlation coefficient
+
+Pearson r answers a symmetric question: do X and Y move together?
+Prerequisite-ness is asymmetric: does progress in Y require X first? A
+high r cannot separate X -> Y from Y -> X, nor either from "both reflect
+one shared ability", and two nearly identical skills correlate almost
+perfectly while neither is a prerequisite for the other. Pi scores the
+one-sided ceiling footprint instead, which is why the equivalence case
+splits the two apart: r is close to 1 while `Delta = 0` and both `Pi = 0`.
+That is a property of the definitions. The two coefficients answer
+different questions; Pi complements r rather than replacing it.
 
 Anchored scales are an interpretability requirement, not a claim about the
 measurement precision of any scoring model: the ratio `Y / X` and the
@@ -112,6 +148,12 @@ subtraction attribute set (8 attributes, n = 536, 56 ordered pairs): every
 closed-form component agrees within `1e-12`, and a full scan reproduces the
 reference edge set, cycle set and equivalence classes.
 
+`test/web_calc.test.mjs` covers the calculator layer that the demo page
+adds on top of the library: CSV parsing and listwise deletion, the
+anchored-range gate, the design floor, the worker request shape and the
+CSV export, plus the freshness and parity of the generated browser
+bundle. Nothing in that file may be used to justify a change to `src/`.
+
 `tools/parity_fs/` records a stronger check that is not part of CI because
 it needs Python and NumPy: with the reference run's own permutation-index
 matrices injected pair by pair, all 56 p-values and adjusted p-values match
@@ -128,38 +170,74 @@ not NumPy's stream. Cross-implementation p-value equality is defined only
 through injected index matrices; a seeded run in one language will not
 reproduce the seeded run of the other.
 
-## Demo
+## Demo page and calculator
 
 `web/index.html` is a static page with no build step, no server and no
-network access — open it directly in a browser. It shows, for two real
-attribute sets:
+network access. Open it locally, or use the published copy at
+<https://jaehwafchoi.github.io/prerelation-js/web/>.
 
-- the directional Pi matrix;
-- the Hasse diagram of the quotient order after equivalence-class
-  condensation, with mutually dominating attributes drawn as one merged
-  node;
-- a pair inspector: the (theta_x, theta_y) scatter with the corner region
-  and the ceiling band drawn on it, next to the component decomposition
-  `A1 * (q * ell)`.
+**The calculator.** Upload a CSV of scores on the anchored `[0, 1]` scale
+— one column per skill, one row per person — and the page computes
+everything in your browser. The file is read with `FileReader` and never
+leaves the machine: there is no upload endpoint and the page makes no
+network requests.
 
-The two datasets are ECPE (3 skills, n = 2,922; the retained edges form a
-chain) and fraction subtraction (8 attributes, n = 536; cycles condense
-into one merged class).
+- Header detection and delimiter sniffing (comma, semicolon, tab);
+  listwise deletion of rows with missing values, with the count shown.
+- **Anchored-scale gate.** Values outside `[0, 1]` are a hard error with
+  guidance, and the page does *not* rescale: a silent min-max rescaling
+  would fabricate the anchors that give Pi its reading.
+- Two selected columns give a pair card: Delta (labelled the prerelation
+  direction coefficient), Pi in both directions with the components,
+  the permutation p-value at a replicate count you set, and the scatter
+  with the corner and ceiling overlays.
+- Three or more columns give the full scan: Pi matrix, the Hasse diagram
+  of the quotient order, and a pair inspector. The **design floor**
+  `M >= K / alpha - 1` is enforced and displayed.
+- Permutations run in a Web Worker with a progress bar and a cancel
+  button, falling back to the main thread where workers are unavailable.
+  The frozen constants (`TOP_Q`, `delta`, `MIN_INTERIOR`) are displayed
+  and not editable.
+- Results table plus CSV export, Delta and the components included.
+  Bootstrap confidence intervals are out of scope for this version.
 
-Everything the page displays is precomputed by this package's own library,
-not imported from another implementation:
+**Sample data.** Two small files to try it with:
+
+| file | shape | what to expect |
+|---|---|---|
+| [`sample1_prereq_pair.csv`](https://drive.google.com/file/d/1B0JLxBuko6YOerR9qjAeELlurARBZvaH/view) | 500 x 2 (basic_arithmetic, algebra) | a strong one-directional result (arithmetic -> algebra), near-zero reverse; compare with the Pearson r shown |
+| [`sample2_skill_chain.csv`](https://drive.google.com/file/d/1uY0L4ULmEzb6xjf8OqYr1-2OVWQPEjCF/view) | 600 x 5 (counting -> addition -> multiplication -> division, plus unrelated spelling) | the chain, with direct links strongest and indirect links weaker (the Hasse view prunes implied links); spelling connected to nothing |
+
+**Real-data demonstrations.** The page also shows two recorded scans:
+ECPE (3 attributes, n = 2,922; the retained edges form a chain) and
+fraction subtraction (8 attributes, n = 536; cycles condense into one
+merged node, shown as-is).
+
+Everything the page displays is computed by this package's own library —
+live in the browser for the four-panel comparison and the calculator, and
+from the library's own recorded seeded runs for the two demonstrations:
 
 ```bash
 node tools/precompute_demo.mjs     # rewrites web/demo_data.js
+npm run build:web                  # rewrites web/prerelation.browser.js from src/
 ```
+
+`web/prerelation.browser.js` is a generated classic-script bundle of
+`src/` so that the page and its worker can run the library without a
+build system. It is never edited by hand: `test/web_calc.test.mjs`
+fails if the committed bundle is not what the builder produces from the
+current `src/`, and separately checks that the bundle and the ES modules
+return identical doubles.
 
 ## Repository layout
 
 ```
 src/          core.mjs, scan.mjs, prng.mjs, index.mjs
-test/         golden.test.mjs, fs_scan.test.mjs, scan_unit.test.mjs, data/
-tools/        precompute_demo.mjs, parity_fs/
-web/          index.html, app.js, demo_data.js
+test/         golden.test.mjs, fs_scan.test.mjs, scan_unit.test.mjs,
+              web_calc.test.mjs, data/
+tools/        precompute_demo.mjs, build_web_lib.mjs, parity_fs/
+web/          index.html, app.js, calc_core.js, worker.js,
+              prerelation.browser.js (generated), demo_data.js
 ```
 
 `test/data/` holds the golden vectors copied from the reference release,

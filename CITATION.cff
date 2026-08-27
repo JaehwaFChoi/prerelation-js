@@ -3,15 +3,16 @@ message: "If you use this software, please cite it as below."
 title: "prerelation-js: the prerelation coefficient in JavaScript"
 abstract: >-
   A dependency-free JavaScript implementation of the prerelation
-  coefficient and its pairwise scan, held in parity with the Python
-  reference implementation through committed golden vectors.
+  coefficient and its pairwise scan, with a browser calculator, held in
+  parity with the Python reference implementation through committed
+  golden vectors.
 type: software
 authors:
   - family-names: Choi
     given-names: Jaehwa
     email: jaechoi@gwu.edu
     affiliation: George Washington University
-version: 0.1.0
+version: 0.2.0
 date-released: "2026-08-27"
 license: MIT
 doi: 10.5281/zenodo.22133624
