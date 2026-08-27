@@ -252,7 +252,7 @@ JavaScript port.
 | | concept DOI (latest version) | this version |
 |---|---|---|
 | `prerelation` (Python, reference) | [10.5281/zenodo.22132819](https://doi.org/10.5281/zenodo.22132819) | 0.2.0: [10.5281/zenodo.22132820](https://doi.org/10.5281/zenodo.22132820) |
-| `prerelation-js` (this package) | [10.5281/zenodo.22133624](https://doi.org/10.5281/zenodo.22133624) | 0.1.0: [10.5281/zenodo.22133625](https://doi.org/10.5281/zenodo.22133625) |
+| `prerelation-js` (this package) | [10.5281/zenodo.22133624](https://doi.org/10.5281/zenodo.22133624) | 0.2.0: [10.5281/zenodo.22134350](https://doi.org/10.5281/zenodo.22134350) |
 
 Machine-readable metadata is in `CITATION.cff`.
 
