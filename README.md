@@ -1,5 +1,7 @@
 # prerelation-js
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22133624.svg)](https://doi.org/10.5281/zenodo.22133624)
+
 A JavaScript implementation of the **prerelation coefficient** — a
 coefficient for prerequisite relations between traits reported on a common
 anchored scale — held in parity with the Python reference implementation
@@ -167,7 +169,14 @@ used by the fraction subtraction parity test.
 ## Citation
 
 Cite the reference implementation for the method and this package for the
-JavaScript port; see `CITATION.cff`.
+JavaScript port.
+
+| | concept DOI (latest version) | this version |
+|---|---|---|
+| `prerelation` (Python, reference) | [10.5281/zenodo.22132819](https://doi.org/10.5281/zenodo.22132819) | 0.2.0: [10.5281/zenodo.22132820](https://doi.org/10.5281/zenodo.22132820) |
+| `prerelation-js` (this package) | [10.5281/zenodo.22133624](https://doi.org/10.5281/zenodo.22133624) | 0.1.0: [10.5281/zenodo.22133625](https://doi.org/10.5281/zenodo.22133625) |
+
+Machine-readable metadata is in `CITATION.cff`.
 
 ## License
 

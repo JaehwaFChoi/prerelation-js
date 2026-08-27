@@ -14,7 +14,15 @@ authors:
 version: 0.1.0
 date-released: "2026-08-27"
 license: MIT
+doi: 10.5281/zenodo.22133624
 repository-code: "https://github.com/JaehwaFChoi/prerelation-js"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22133624
+    description: Concept DOI, resolves to the latest version
+  - type: doi
+    value: 10.5281/zenodo.22133625
+    description: DOI of version 0.1.0
 keywords:
   - psychometrics
   - prerequisite relations
