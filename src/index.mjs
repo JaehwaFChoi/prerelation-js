@@ -16,3 +16,14 @@ export {
   condense,
 } from "./scan.mjs";
 export { sfc32, permutationStream } from "./prng.mjs";
+export {
+  admissibility,
+  interiorQ,
+  prereqIndexFamily,
+  piEnvelope,
+  uniformReference,
+  betaReference,
+  pointMassReference,
+  attainingReference,
+  regularizedIncompleteBeta,
+} from "./reference.mjs";
