@@ -1,6 +1,6 @@
 {
   "name": "prerelation-js",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "JavaScript implementation of the prerelation coefficient, with a browser calculator, in parity with the Python reference implementation",
   "license": "MIT",
   "author": "Jaehwa Choi <jaechoi@gwu.edu>",
