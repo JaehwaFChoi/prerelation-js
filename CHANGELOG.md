@@ -5,6 +5,32 @@ archived on Zenodo; the concept DOI
 [10.5281/zenodo.22133624](https://doi.org/10.5281/zenodo.22133624)
 always resolves to the latest.
 
+## 0.3.0 — 2026-09-02
+
+Ports the admissible reference class and the exact upper envelope from the
+Python reference implementation. **The computation engine is unchanged**:
+`src/core.mjs`, `src/scan.mjs` and `src/prng.mjs` are byte-identical to
+0.2.0.
+
+- New `src/reference.mjs`, still with zero runtime dependencies: exports
+  `admissibility`, `interiorQ`, `prereqIndexFamily`, `piEnvelope` and the
+  reference constructors `uniformReference`, `betaReference`,
+  `pointMassReference` and `attainingReference`.
+- The regularised incomplete beta that `betaReference` needs is implemented
+  in file (Lanczos log-gamma with a Lentz continued fraction) and is
+  deliberately not exported: it is a platform gap-filler that the Python and
+  R implementations take from `scipy` and base R, and no golden quantity
+  depends on it.
+- Checked against the Python golden vectors at a tolerance of 1e-12 over the
+  thirty new quantities: twenty-seven bit-identical, largest absolute
+  difference 1.665e-16. Every non-identical quantity is `PI_hi` on exactly
+  the fixtures where `A1` was already non-identical, so the residue is the
+  existing accumulation-order difference propagating rather than a new one.
+- `tools/parity_core.mjs` added for the cross-language comparison. It
+  recomputes `v`, `v0` and `p1_top` from the definition because the package
+  does not export them, so those rows measure the harness and not the
+  library.
+  
 ## 0.2.0 — 2026-08-27
 
 The demo page becomes a practitioner-facing guide with a working
